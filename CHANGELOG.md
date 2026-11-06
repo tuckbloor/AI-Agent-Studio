@@ -1,33 +1,47 @@
-# Agent Studio v2.2 — Retailer-First Search
+# Changelog
 
-- Official retailer category/sitemap discovery before a public RSS search when recognised.
-- Dedicated super-king bed category discovery for the Bensons for Beds request.
-- Wider but bounded same-site anchor crawl (up to 12 pages, two link levels).
-- No false failure when public RSS is irrelevant but official links were inspected.
-- Report size ambiguity; do not present a default bed frame price as confirmed super king.
-- Keeps the original purple interface and AI App Server integration, no external API key.
-- No changes to existing AI App Server engine, database, users or settings.
+## v2.3.4 — Persistent Windows installer wizard
 
-# Agent Studio v2.1 — Relevant Website Research
+- Replaces the sequence of short-lived folder-picker dialogs with one installer window that remains open through selection, progress, errors and success.
+- `INSTALL.bat` starts the GUI in a separate Python window on Windows; there are still exactly two BAT files.
+- Offers existing compatible AI App Server or installing a new bundled server first, with editable destinations and clear update confirmation.
+- Captures installer output in the GUI and writes a per-user log under LocalAppData. Failure no longer silently closes the installation UI.
+- Does not change Studio runtime behavior, installed databases, separate AI App Server instances, or update/rollback safety logic.
 
-- Upgrades built-in no-key web search to **rank search results** instead of accepting unrelated listings.
-- Opens eligible public HTML pages and follows relevant **same-site anchor links**, one level deep.
-- Extracts structured and labelled product prices with product name, exact page URL and source type.
-- Separates verified on-page price evidence from unverified search snippets, and flags missing evidence.
-- Streams live website search/open/follow/extraction activity into the existing purple Studio monitor.
-- Corrects shopping query generation so retailer names like Bensons for Beds are kept intact.
-- Retries a shorter query once when a key-free search result set is irrelevant.
-- Adds SSRF defenses, public DNS pinning, robots checks, fetch-size limits and bounded crawling.
-- Preserves the AI App Server, admin editor at `/admin/studio`, existing user database, custom tools and purple UI.
-- Repackages everything in **one full installer**, never an incremental patch.
+## v2.3.3 — Confirm before overwriting an existing Studio project
 
----
-# Agent Studio v2.0 — Complete AI App Server installer
+- When a chosen directory contains a recognised existing Studio installation, `INSTALL.bat` now asks Yes/No instead of failing with a generic non-empty destination error. No cancels without changes.
+- Yes creates a dated backup outside Studio, replaces only release-managed application code, preserves the database/agents/users/configuration, verifies routes, and restores old code if installation fails.
+- Unknown, special and unrelated folders are never overwritten. CLI automation requires an explicit `--overwrite-existing` flag.
+- Still only `INSTALL.bat` and `START.bat`; AI App Server standalone installations remain unmodified.
 
-- Fixed the actual v1.9 failure: the Studio API routes were missing even though admin routes appeared. Register every `/studio/*` route directly on the existing FastAPI app, without a separate APIRouter.
-- Preflight verifies both GET `/studio/api/studio/status` and POST `/studio/api/studio/run/events` plus `/admin/studio` before announcing success.
-- Existing source, settings and SQLite data remain untouched; previous Studio code is backed up and restored on preflight failure.
-- Original purple interface retained. The editor remains inside `/admin/studio`.
-- No separate patch is required. Extract this complete package and run INSTALL AND RUN.bat.
+## v2.3.2 — Start from source and safe interrupted-install recovery
 
-**Caution:** Live startup on the user's Windows machine, Ollama and MCP access have not been verified here.
+- `START.bat` now detects source versus installed folders, finds or asks for the correct Studio installation, and avoids misleading virtualenv-missing errors.
+- The installer remembers the selected Studio directory in a local per-user file so subsequent starts can find it. This file is never committed.
+- `--resume` can finish a missing Python environment or app bootstrap without replacing user data, accounts, agent projects or existing app code.
+- A copy of the Python recovery logic is included inside the installed Studio and bundled AI App Server; either can complete a missing Python environment, with no additional BAT files.
+- Added tests for interrupted installs, source launcher and recorded-location safety.
+
+
+## v2.3.1 — Windows route preflight correction and safe recovery
+
+- Corrected the route verification crash when FastAPI returns `_IncludedRouter` entries without a `.path`. Router containers are handled safely, while missing Studio endpoints remain an error.
+- Added `INSTALL.bat --resume` (folder picker) or `--resume "STUDIO_FOLDER"` to finish v2.3.0 installations stopped by this verification bug, without touching databases, application source, existing servers or accounts.
+- Added regression tests covering nested router containers, missing routes and safe recovery of an existing installation.
+- Still just two BAT files: `INSTALL.bat` and `START.bat`.
+
+
+## v2.3.0 — clean two-stage portable installer
+
+- Complete Agent Studio v2.2 source preserved, including Ollama, MCP integration, tools, SQL Server read-only support and visual editor.
+- Installer checks for an installed AI App Server v1.0.4–v1.0.5, with a browseable destination. When missing, asks to install the bundled standalone AI App Server v1.0.5 first.
+- Creates an independent Studio server instance with isolated framework code, accounts, SQLite database, admin dashboard and application port. No changes are made to an existing server.
+- Install path can be any writable drive or folder; no fixed E: requirement. Never overwrites a non-empty destination.
+- Exactly two BAT files in the GitHub source root: `INSTALL.bat`, `START.bat`. Removed old multi-file overlay and launcher workflow.
+- Added first-login, desktop shortcut, automatic Windows sign-in startup, compatibility, testing and support instructions.
+- Fresh-install only. In-place upgrade and Windows Service are not bundled in this release.
+
+## v2.2 — original visual agent builder
+
+See [v2.2](https://github.com/tuckbloor/AI-Agent-Studio) for older Studio changelog and feature history.

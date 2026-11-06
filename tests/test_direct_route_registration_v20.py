@@ -47,13 +47,14 @@ def test_registered_directly_even_if_include_router_is_broken(tmp_path):
         assert client.get('/studio/api/studio/status').status_code==200
 
 
-def test_server_route_preflight_checks_method_and_paths(tmp_path):
-    import importlib.util
-    launcher=APP_DIR.parent/'RUN_AGENT_STUDIO_ON_SERVER.py'
-    spec=importlib.util.spec_from_file_location('launcher_20', launcher)
-    module=importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    app=FastAPI()
-    app.state.store=Store(tmp_path)
-    install_studio(app)
-    assert module.verify_routes(app)
+def test_new_studio_engine_extension_is_loaded(tmp_path):
+    import sys
+    sys.path.insert(0,str(APP_DIR.parent/'tools'))
+    from studio_install import clean_copy, install_extension, ROOT, BUNDLE
+    target=tmp_path/'agent studio'
+    clean_copy(BUNDLE,target,dirs=('engine','starter','tools'))
+    install_extension(target/'engine')
+    contents=(target/'engine/ai_app_server/server.py').read_text(encoding='utf-8')
+    assert 'studio_dir = script.parent' in contents
+    assert 'install_studio(app)' in contents
+    assert (BUNDLE/'engine/ai_app_server/server.py').read_text(encoding='utf-8') != contents

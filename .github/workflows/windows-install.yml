@@ -1,0 +1,108 @@
+name: Python tests and Windows clean-install check
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install development dependencies
+        run: python -m pip install -e './framework/engine[dev]'
+      - name: Run tests
+        run: python -m pytest -q
+
+  windows-first-install:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer GUI opens (smoke test)
+        shell: pwsh
+        run: |
+          python tools/studio_gui.py --self-test
+          if ($LASTEXITCODE -ne 0) { throw 'Installer GUI import failed' }
+          python tools/studio_gui.py --ui-smoke
+          if ($LASTEXITCODE -ne 0) { throw 'Persistent installer GUI failed to open' }
+      - name: Install a new framework then a separate Studio instance
+        shell: pwsh
+        run: |
+          $server = Join-Path $env:RUNNER_TEMP 'AI Framework Fresh'
+          $studio = Join-Path $env:RUNNER_TEMP 'AI Studio Fresh'
+          python tools/studio_install.py --install-server "$server" --studio "$studio" --no-start
+          if ($LASTEXITCODE -ne 0) { throw 'Fresh installation failed' }
+          $python = Join-Path $studio '.venv\Scripts\python.exe'
+          if (!(Test-Path $python)) { throw 'Studio isolated Python missing' }
+          Push-Location "$studio"
+          # Run the *same* preflight as the installer and verify retry support.
+          $env:PYTHONPATH = "$env:GITHUB_WORKSPACE\tools"
+          & $python -c "from studio_install import ROUTE_PREFLIGHT; exec(ROUTE_PREFLIGHT)"
+          if ($LASTEXITCODE -ne 0) { throw 'Route verification failed' }
+          python "$env:GITHUB_WORKSPACE\tools\studio_install.py" --resume "$studio" --no-start
+          if ($LASTEXITCODE -ne 0) { throw 'Safe resume verification failed' }
+          Remove-Item Env:PYTHONPATH -ErrorAction SilentlyContinue
+          & $python -m ai_app_server.desktop_launcher start --project "$studio" --no-browser
+          if ($LASTEXITCODE -ne 0) { throw 'Windows background startup failed' }
+          try {
+            # START.bat in the source checkout must find the installed instance.
+            & "$env:GITHUB_WORKSPACE\START.bat" --status
+            if ($LASTEXITCODE -ne 0) { throw 'Source START.bat failed to locate installed Studio' }
+            & $python -m ai_app_server.desktop_launcher status --project "$studio"
+            if ($LASTEXITCODE -ne 0) { throw 'Status check failed' }
+            $port = & $python -c "from pathlib import Path; from ai_app_server.hosting import read_hosting; print(read_hosting(Path('data'))['port'])"
+            $health = Invoke-RestMethod -Uri "http://127.0.0.1:$port/health" -TimeoutSec 10
+            if ($health.status -ne 'ok') { throw 'Health route failed' }
+          } finally {
+            & $python -m ai_app_server.desktop_launcher stop --project "$studio"
+            Pop-Location
+          }
+          # Opt-in update to existing Studio should preserve installed data.
+          New-Item -ItemType Directory -Force -Path (Join-Path $studio 'config') | Out-Null
+          Set-Content -Path (Join-Path $studio 'config\preserve.txt') -Value 'custom setting'
+          python tools/studio_install.py --server "$server" --studio "$studio" --overwrite-existing --no-start
+          if ($LASTEXITCODE -ne 0) { throw 'Existing Studio opt-in update failed' }
+          if (!(Test-Path (Join-Path $studio 'config\preserve.txt'))) { throw 'Config lost during update' }
+          if (@(Get-ChildItem $env:RUNNER_TEMP -Directory -Filter 'AI Studio Fresh-backup-*').Count -lt 1) {
+            throw 'No backup created during existing Studio update'
+          }
+          # An unrelated existing folder must NEVER accept --overwrite-existing.
+          $unrelated = Join-Path $env:RUNNER_TEMP 'Unrelated Files'
+          New-Item -ItemType Directory -Force -Path $unrelated | Out-Null
+          Set-Content -Path (Join-Path $unrelated 'personal.txt') -Value 'untouched'
+          python tools/studio_install.py --server "$server" --studio "$unrelated" --overwrite-existing --copy-only
+          if ($LASTEXITCODE -eq 0) { throw 'Unrelated folder should not be overwritten' }
+          if (!(Test-Path (Join-Path $unrelated 'personal.txt'))) { throw 'Unrelated data damaged' }
+        working-directory: ${{ github.workspace }}
+      - name: Recover interrupted install from installed START.bat
+        shell: pwsh
+        run: |
+          $server = Join-Path $env:RUNNER_TEMP 'Framework Copy Only'
+          $studio = Join-Path $env:RUNNER_TEMP 'Studio Interrupted Copy Only'
+          python tools/studio_install.py --install-server "$server" --studio "$studio" --copy-only
+          if ($LASTEXITCODE -ne 0) { throw 'Copy-only setup failed' }
+          if (Test-Path "$studio\.venv\Scripts\python.exe") { throw 'Copy-only must not have an environment yet' }
+          # Recover a separately installed server and then a Studio copy.
+          & "$server\START.bat" --background
+          if ($LASTEXITCODE -ne 0) { throw 'Recovery of standalone server failed' }
+          & "$server\START.bat" --stop
+          if ($LASTEXITCODE -ne 0) { throw 'Stop recovered standalone server failed' }
+          & "$studio\START.bat" --background
+          if ($LASTEXITCODE -ne 0) { throw 'Recovery of missing venv failed' }
+          & "$studio\START.bat" --stop
+          if ($LASTEXITCODE -ne 0) { throw 'Stop recovered Studio failed' }
+      - name: Only two BAT files in repository
+        shell: pwsh
+        run: |
+          $actual = @(Get-ChildItem -Path . -Filter '*.bat' -Recurse -File | ForEach-Object { $_.Name } | Sort-Object)
+          $expected = @('INSTALL.bat','START.bat')
+          if (@(Compare-Object -ReferenceObject $expected -DifferenceObject $actual).Length -ne 0) {
+            throw "Expected exactly INSTALL.bat and START.bat, got: $actual"
+          }

@@ -1,0 +1,45 @@
+@echo off
+setlocal EnableExtensions
+cd /d "%~dp0"
+title AI App Server
+set "ACTION=start"
+set "BROWSER_FLAG="
+if /I "%~1"=="--background" set "BROWSER_FLAG=--no-browser"
+if /I "%~1"=="--stop" set "ACTION=stop"
+if /I "%~1"=="--status" set "ACTION=status"
+if /I "%~1"=="--disable-autostart" set "ACTION=remove-startup"
+if not exist "%~dp0.venv\Scripts\python.exe" goto :recover
+"%~dp0.venv\Scripts\python.exe" -m ai_app_server.desktop_launcher %ACTION% --project "%CD%" %BROWSER_FLAG%
+set "RESULT=%ERRORLEVEL%"
+if not "%RESULT%"=="0" (
+    echo The command failed. See the message above.
+    if /I not "%~1"=="--background" pause
+)
+exit /b %RESULT%
+
+:recover
+if not exist "%~dp0tools\studio_install.py" (
+    echo AI App Server has an incomplete Python environment, and no recovery helper.
+    exit /b 1
+)
+if /I not "%ACTION%"=="start" (
+    echo This server is not ready. Run START.bat to complete setup first.
+    exit /b 1
+)
+where py >nul 2>nul
+if not errorlevel 1 (
+    py -3 -c "import sys;sys.exit(0 if sys.version_info >= (3,11) else 1)" >nul 2>nul
+    if not errorlevel 1 goto :recover-with-py
+)
+where python >nul 2>nul
+if not errorlevel 1 goto :recover-with-python
+echo Python 3.11 or newer is required.
+exit /b 1
+
+:recover-with-py
+py -3 "%~dp0tools\studio_install.py" --resume-server "%CD%" %BROWSER_FLAG%
+exit /b %ERRORLEVEL%
+
+:recover-with-python
+python "%~dp0tools\studio_install.py" --resume-server "%CD%" %BROWSER_FLAG%
+exit /b %ERRORLEVEL%

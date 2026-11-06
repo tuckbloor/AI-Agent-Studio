@@ -105,5 +105,5 @@ def test_live_events_are_on_same_server(client,monkeypatch):
 def test_no_duplicate_preview_server():
     root=APP_DIR/'studio_integration'
     assert 'ThreadingHTTPServer(' not in (root/'routes.py').read_text()
-    script=(APP_DIR.parent/'RUN_AGENT_STUDIO_ON_SERVER.py').read_text()
-    assert 'create_app(' in script and 'install_studio(' in script
+    script=(APP_DIR.parent/'tools'/'studio_install.py').read_text()
+    assert 'install_extension(' in script and 'install_studio' in script
