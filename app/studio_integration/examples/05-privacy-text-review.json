@@ -1,0 +1,50 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-05-privacy-text-review",
+  "name": "Privacy text review helper",
+  "steps": [
+    {
+      "id": "start",
+      "type": "trigger",
+      "title": "Start",
+      "description": "Enter a question or paste text",
+      "config": {
+        "event": "manual"
+      }
+    },
+    {
+      "id": "tools",
+      "type": "mcp",
+      "title": "Use selected tools",
+      "description": "Tools run in the listed order",
+      "config": {
+        "tools": [
+          "builtin:redact_emails",
+          "builtin:redact_phones",
+          "builtin:word_count"
+        ],
+        "toolArgs": {}
+      }
+    },
+    {
+      "id": "ollama",
+      "type": "ai",
+      "title": "Think with Ollama",
+      "description": "Analyse tool results",
+      "config": {
+        "model": "",
+        "instructions": "Review patterns in the supplied text. Do not claim original input was anonymised before the model received it."
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "title": "Return the answer",
+      "description": "Show result",
+      "config": {
+        "format": "text"
+      }
+    }
+  ]
+}

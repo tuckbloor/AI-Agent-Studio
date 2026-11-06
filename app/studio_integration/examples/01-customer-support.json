@@ -1,0 +1,50 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-01-customer-support",
+  "name": "Customer support assistant",
+  "steps": [
+    {
+      "id": "start",
+      "type": "trigger",
+      "title": "Start",
+      "description": "Enter a question or paste text",
+      "config": {
+        "event": "manual"
+      }
+    },
+    {
+      "id": "tools",
+      "type": "mcp",
+      "title": "Use selected tools",
+      "description": "Tools run in the listed order",
+      "config": {
+        "tools": [
+          "builtin:extract_emails",
+          "builtin:extract_actions",
+          "builtin:word_count"
+        ],
+        "toolArgs": {}
+      }
+    },
+    {
+      "id": "ollama",
+      "type": "ai",
+      "title": "Think with Ollama",
+      "description": "Analyse tool results",
+      "config": {
+        "model": "",
+        "instructions": "Draft a helpful support reply from the supplied text. Do not invent policies."
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "title": "Return the answer",
+      "description": "Show result",
+      "config": {
+        "format": "text"
+      }
+    }
+  ]
+}

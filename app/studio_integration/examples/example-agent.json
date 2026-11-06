@@ -1,0 +1,11 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-agent-demo-v1",
+  "name": "My sample agent",
+  "steps": [
+    {"id": "trigger-one", "type": "trigger", "title": "Start", "description": "Manual start", "config": {"event": "manual"}},
+    {"id": "agent-one", "type": "ai", "title": "Answer with Ollama", "description": "Use your chosen installed model", "config": {"model": "", "instructions": "Be helpful, factual and concise."}},
+    {"id": "output-one", "type": "output", "title": "Answer", "description": "Return answer", "config": {"format": "text"}}
+  ]
+}

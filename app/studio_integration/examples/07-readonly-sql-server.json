@@ -1,0 +1,56 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-07-readonly-sql-server",
+  "name": "SQL Server reader",
+  "description": "Read a chosen SQL Server table and explain its rows to me.",
+  "steps": [
+    {
+      "id": "start",
+      "type": "trigger",
+      "title": "Start here",
+      "description": "Enter a topic or request",
+      "config": {
+        "event": "manual"
+      }
+    },
+    {
+      "id": "tools",
+      "type": "mcp",
+      "title": "Use live information source",
+      "description": "Read from the selected configured source",
+      "config": {
+        "tools": [
+          "live:sql_readonly"
+        ],
+        "toolArgs": {
+          "live:sql_readonly": {
+            "table": "dbo.ChooseYourTable",
+            "limit": 10,
+            "filter_column": "",
+            "filter_value": ""
+          }
+        }
+      }
+    },
+    {
+      "id": "ollama",
+      "type": "ai",
+      "title": "Think with Ollama",
+      "description": "Analyse retrieved information",
+      "config": {
+        "model": "",
+        "instructions": "Summarise only the SQL rows returned. Explain patterns and limitations; do not infer missing rows or modify data."
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "title": "Return the answer",
+      "description": "Finished answer with evidence",
+      "config": {
+        "format": "text"
+      }
+    }
+  ]
+}

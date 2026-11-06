@@ -1,0 +1,11 @@
+{
+  "format": "agent-studio/tool",
+  "version": 1,
+  "tool": {
+    "id": "example-company-faq",
+    "name": "Example Company FAQ",
+    "description": "Example reference details for the agent to use",
+    "kind": "text",
+    "body": "Opening hours: Monday to Friday, 9am to 5pm. Contact: use the official support channel. These are EXAMPLE details, not real company information."
+  }
+}

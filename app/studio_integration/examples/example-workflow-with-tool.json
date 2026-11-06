@@ -1,0 +1,15 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-workflow-faq",
+  "name": "Example FAQ assistant",
+  "steps": [
+    {"id":"example-start","type":"trigger","title":"Start here","description":"Ask a question","config":{"event":"manual"}},
+    {"id":"example-tool-node","type":"mcp","title":"Find FAQ information","description":"Read the saved FAQ","config":{"tool":"example-company-faq","arguments":"{}"}},
+    {"id":"example-model","type":"ai","title":"Explain with Ollama","description":"Use the reference to answer","config":{"model":"","instructions":"Answer the original user question using the provided tool information. State when information is missing."}},
+    {"id":"example-answer","type":"output","title":"Return the answer","description":"Show the response","config":{"format":"text"}}
+  ],
+  "tools": [
+    {"id":"example-company-faq","name":"Example Company FAQ","description":"Example reference details for the agent to use","kind":"text","body":"Opening hours: Monday to Friday, 9am to 5pm. Contact: use the official support channel. These are EXAMPLE details, not real company information."}
+  ]
+}

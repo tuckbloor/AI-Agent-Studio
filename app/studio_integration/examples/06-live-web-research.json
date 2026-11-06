@@ -1,0 +1,53 @@
+{
+  "format": "agent-studio/workflow",
+  "version": 1,
+  "id": "example-06-live-web-research",
+  "name": "Live web research",
+  "description": "Find sources on the live web and summarise what can be supported by them.",
+  "steps": [
+    {
+      "id": "start",
+      "type": "trigger",
+      "title": "Start here",
+      "description": "Enter a topic or request",
+      "config": {
+        "event": "manual"
+      }
+    },
+    {
+      "id": "tools",
+      "type": "mcp",
+      "title": "Use live information source",
+      "description": "Read from the selected configured source",
+      "config": {
+        "tools": [
+          "live:web_search"
+        ],
+        "toolArgs": {
+          "live:web_search": {
+            "query": "{{input}}"
+          }
+        }
+      }
+    },
+    {
+      "id": "ollama",
+      "type": "ai",
+      "title": "Think with Ollama",
+      "description": "Analyse retrieved information",
+      "config": {
+        "model": "",
+        "instructions": "Use only the returned web search links and snippets as evidence. Give source URLs and do not invent claims."
+      }
+    },
+    {
+      "id": "output",
+      "type": "output",
+      "title": "Return the answer",
+      "description": "Finished answer with evidence",
+      "config": {
+        "format": "text"
+      }
+    }
+  ]
+}

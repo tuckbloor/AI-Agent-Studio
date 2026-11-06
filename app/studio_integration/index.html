@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080c18" />
+  <meta name="description" content="Describe an AI agent in plain English. Ollama chooses from 22 available tools and drafts a workflow you can review, edit, run and export." />
+  <title>Agent Studio — Your ideas, in motion</title>
+  <link rel="stylesheet" href="/studio/assets/styles.css" />
+  <script src="/studio/assets/landing.js" defer></script>
+</head>
+<body class="landing-page">
+  <svg aria-hidden="true" class="svg-sprite" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-spark" viewBox="0 0 24 24"><path d="m12 2 1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2ZM19.5 17l.7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7.7-2.3Z"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+    <symbol id="icon-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-12h-7l0-8Z"/></symbol>
+    <symbol id="icon-cube" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5Zm-9 5 9 5 9-5m-9 5v10"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20m-10-10c6 5 6 15 0 20m0-20c-6 5-6 15 0 20"/></symbol>
+    <symbol id="icon-brain" viewBox="0 0 24 24"><path d="M12 5a4 4 0 0 0-7 2 4 4 0 0 0-1 7 4 4 0 0 0 5 5 3 3 0 0 0 3-3V5Zm0 0a4 4 0 0 1 7 2 4 4 0 0 1 1 7 4 4 0 0 1-5 5 3 3 0 0 1-3-3V5Z"/></symbol>
+    <symbol id="icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 .5l3-3a5 5 0 1 0-7-7l-2 2m3 5a5 5 0 0 0-7-.5l-3 3a5 5 0 1 0 7 7l2-2"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 9h18c0-1-3-2-3-9ZM10 21h4"/></symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24"><path d="m8 5-6 7 6 7m8-14 6 7-6 7m-3-16-3 18"/></symbol>
+  </svg>
+
+  <div class="page-glow glow-top"></div>
+  <div class="page-glow glow-middle"></div>
+  <header class="site-header">
+    <div class="site-container nav-wrap">
+      <a href="/" class="brand" aria-label="Agent Studio home">
+        <span class="brand-icon"><svg class="icon"><use href="#icon-spark" /></svg></span>
+        <span>agent<span class="brand-accent">studio</span><small>by AI App Server</small></span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav"><svg class="icon"><use href="#icon-menu"/></svg></button>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+        <a href="/admin">Server admin</a><a href="#features">Features</a><a href="#how-it-works">How it works</a><a href="#templates">Templates</a>
+      </nav>
+      <a class="button button-outline nav-action" href="/admin/studio">Admin · Agent Builder <svg class="icon"><use href="#icon-arrow"/></svg></a>
+    </div>
+  </header>
+  <main>
+    <section class="hero site-container">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> THE NEXT CHAPTER OF YOUR AI APP SERVER <span class="eyebrow-star">✦</span></div>
+        <h1>Describe your idea.<br/><span class="gradient-text">AI builds the agent.</span></h1>
+        <p class="hero-lede">Tell our AI Builder what you need. Ollama examines the real available tools, proposes the workflow, and shows you the path before anything runs. You can change every step.</p>
+        <form class="hero-idea-form" id="home-idea-form">
+          <label for="home-idea">What do you want your AI agent to do?</label>
+          <textarea id="home-idea" rows="3" maxlength="2400" required minlength="12" placeholder="For example: Search the web for the best UK price for a Shark vacuum cleaner and show me the retailer links."></textarea>
+          <div class="hero-ctas"><button type="submit" class="button button-primary button-large">Create my agent <svg class="icon"><use href="#icon-arrow"/></svg></button><a href="#how-it-works" class="button button-quiet button-large"><span class="play-ring"><svg class="icon"><use href="#icon-play" /></svg></span> How it works</a></div>
+          <p class="hero-idea-help">Your description goes to the private builder inside the AI App Server admin area. Review the design before running.</p>
+        </form>
+        <div class="hero-proofs"><span><svg class="icon"><use href="#icon-check" /></svg> Self-hosted by design</span><span><svg class="icon"><use href="#icon-check" /></svg> Local Ollama runs</span><span><svg class="icon"><use href="#icon-check" /></svg> No coding to design</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Preview of the visual agent workflow designer">
+        <div class="preview-orb preview-orb-a"></div><div class="preview-orb preview-orb-b"></div>
+        <div class="preview-window">
+          <div class="preview-topbar"><div class="window-dots"><i></i><i></i><i></i></div><span class="preview-breadcrumb">Workspace <span>/</span> Customer support agent</span><span class="preview-badge"><span class="status-dot"></span> Visual editor</span></div>
+          <div class="preview-content">
+            <div class="preview-sidebar"><div class="preview-nav-logo">✧</div><div class="preview-nav-item active">▦</div><div class="preview-nav-item">◈</div><div class="preview-nav-item">▤</div><div class="preview-nav-item">⚙</div></div>
+            <div class="preview-flow">
+              <div class="preview-flow-head"><div><div class="preview-tiny-tag">AGENT WORKFLOW</div><h3>Customer support agent</h3><p>From message to meaningful answer</p></div><span class="preview-pill">Draft</span></div>
+              <div class="preview-nodes">
+                <div class="preview-node"><span class="node-icon soft-cyan"><svg class="icon"><use href="#icon-bolt"/></svg></span><div><strong>When a request arrives</strong><small>Webhook trigger</small></div><span class="node-status"></span></div>
+                <div class="preview-connector"><span></span></div>
+                <div class="preview-node selected"><span class="node-icon soft-violet"><svg class="icon"><use href="#icon-brain"/></svg></span><div><strong>Understand & respond</strong><small>Ollama · Local model</small></div><span class="node-status"></span></div>
+                <div class="preview-connector"><span></span></div>
+                <div class="preview-node"><span class="node-icon soft-gold"><svg class="icon"><use href="#icon-link"/></svg></span><div><strong>Search knowledge</strong><small>Local reference tool</small></div><span class="node-status"></span></div>
+                <div class="preview-connector"><span></span></div>
+                <div class="preview-node"><span class="node-icon soft-green"><svg class="icon"><use href="#icon-check"/></svg></span><div><strong>Deliver answer</strong><small>Output</small></div><span class="node-status"></span></div>
+              </div>
+            </div>
+            <div class="preview-inspector"><div class="inspector-lines"><i></i><i></i></div><p>SELECTED STEP</p><h4>Understand & respond</h4><div class="fake-label">Model</div><div class="fake-input">Ollama <span>⌄</span></div><div class="fake-label">Instructions</div><div class="fake-multiline"><i></i><i></i><i></i></div><div class="preview-inspector-bottom"><span class="fake-circle"></span><span>Local-first AI</span></div></div>
+          </div>
+        </div>
+        <div class="float-card float-card-left"><span class="floating-chip">✦</span><div><strong>One idea. Many possibilities.</strong><small>Assemble your agent in minutes</small></div></div>
+        <div class="float-card float-card-right"><span class="floating-chip floating-chip-green"><svg class="icon"><use href="#icon-lock"/></svg></span><div><strong>Your server. Your data.</strong><small>On your own AI App Server</small></div></div>
+      </div>
+    </section>
+
+    <section class="trust-strip"><div class="site-container trust-inner"><span>LOCAL OLLAMA · 20 TEXT TOOLS · KEY-FREE WEB SEARCH · READ-ONLY SQL · MCP</span><div><span>◉ <b>AI App Server</b></span><span>✳ <b>Ollama</b></span><span>◇ <b>Model Context Protocol</b></span><span>◫ <b>Python</b></span></div></div></section>
+
+    <section class="section site-container" id="features"><div class="section-heading"><span class="section-kicker">BUILT DIFFERENT</span><h2>Powerful under the hood.<br/><span class="muted-headline">Effortless on the surface.</span></h2><p>Everything you need to design a capable agent without starting with a blank Python file.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card feature-purple"><div class="feature-symbol"><svg class="icon"><use href="#icon-brain"/></svg></div><h3>AI that fits your world</h3><p>Choose your local Ollama model, write what the agent should do, and shape its behaviour step by step.</p><div class="feature-art feature-art-model"><span class="model-squircle">✦</span><span class="model-line"></span><span class="model-label">YOUR MODEL</span><span class="model-glow"></span></div></article>
+        <article class="feature-card feature-cyan"><div class="feature-symbol"><svg class="icon"><use href="#icon-link"/></svg></div><h3>Reusable tool builder</h3><p>Pick from 20 local tools, add live Web Search or read-only SQL Server, create your own tools, or connect another local MCP server.</p><div class="feature-art tool-art"><div>◎</div><span>↗</span><div>⌘</div><span>↘</span><div>◈</div></div></article>
+        <article class="feature-card feature-orange"><div class="feature-symbol"><svg class="icon"><use href="#icon-lock"/></svg></div><h3>Designed for independent deployment</h3><p>Agent Studio now runs inside your AI App Server, using its login, administration and native MCP endpoint.</p><div class="feature-art self-art"><div><span class="server-light"></span><span></span><span></span></div><div><span class="server-light"></span><span></span><span></span></div><div><span class="server-light"></span><span></span><span></span></div></div></article>
+      </div>
+    </section>
+    <section class="section site-container how-section" id="how-it-works"><div class="how-copy"><span class="section-kicker">IT JUST MAKES SENSE</span><h2>From “what if”<br/>to <span class="gradient-text">what’s next.</span></h2><p>Describe the job in plain English. Our local Ollama design agent chooses from available tools and draws the workflow. Then you review, modify, test and export it.</p><a href="/admin/studio" class="inline-link">Explore the visual builder <svg class="icon"><use href="#icon-arrow"/></svg></a></div><div class="how-steps"><div class="how-step"><span class="step-number">01</span><div><h3>Describe the job</h3><p>Tell Ollama what your agent should do in everyday language.</p></div><span class="step-glyph">✦</span></div><div class="how-step"><span class="step-number">02</span><div><h3>AI selects tools</h3><p>Our AI Builder examines the tool catalogue and recommends real tools.</p></div><span class="step-glyph">◈</span></div><div class="how-step"><span class="step-number">03</span><div><h3>Review, test and improve</h3><p>See the proposed path, add or remove tools, save and export your design.</p></div><span class="step-glyph">⌘</span></div></div></section>
+    <section class="section site-container" id="templates"><div class="section-heading template-heading"><span class="section-kicker">START SOMEWHERE GREAT</span><h2>A head start for every idea.</h2><p>Seven guided examples: five local text-based agents and two new live-data agents. Choose your source, then run and see every step.</p></div><div class="template-grid">
+      <a class="template-card" href="/admin/studio?template=support"><span class="template-icon tint-purple">✳</span><div><span class="template-tag">CUSTOMER EXPERIENCE</span><h3>Support assistant</h3><p>Understand incoming questions and prepare helpful replies.</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=monitor"><span class="template-icon tint-cyan">◎</span><div><span class="template-tag">OPERATIONS</span><h3>System incident review</h3><p>Describe faults and plan the next diagnostic step.</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=knowledge"><span class="template-icon tint-gold">◇</span><div><span class="template-tag">KNOWLEDGE</span><h3>Knowledge assistant</h3><p>Use a local knowledge tool before your Ollama model.</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=research"><span class="template-icon tint-green">☷</span><div><span class="template-tag">RESEARCH</span><h3>Research digest</h3><p>Turn pasted notes into a clear summary (no automatic web access).</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=web"><span class="template-icon tint-cyan">🌐</span><div><span class="template-tag">LIVE INTERNET</span><h3>Live web research</h3><p>Search public websites with no API key or extra setup, then summarise results and show sources.</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=database"><span class="template-icon tint-green">▦</span><div><span class="template-tag">SQL SERVER DATA</span><h3>SQL Server reader</h3><p>Choose an approved table, safely read up to 20 rows, and ask Ollama about them.</p></div><span class="template-open">↗</span></a>
+      <a class="template-card" href="/admin/studio?template=privacy"><span class="template-icon tint-gold">◈</span><div><span class="template-tag">PRIVACY REVIEW</span><h3>Privacy text helper</h3><p>Identify and mask email and phone patterns in supplied text. Review the result before sharing.</p></div><span class="template-open">↗</span></a>
+    </div></section>
+    <section class="site-container"><div class="cta-panel"><div class="cta-orbit"></div><span class="section-kicker">YOUR NEXT BUILD STARTS HERE</span><h2>Make something <span>remarkable.</span></h2><p>Start with one description. Let AI propose the workflow, then stay in control of your models, tools and information.</p><a href="/admin/studio" class="button button-white button-large">Launch Agent Studio <svg class="icon"><use href="#icon-arrow"/></svg></a></div></section>
+  </main>
+  <footer class="site-footer"><div class="site-container footer-inner"><a href="/" class="brand footer-brand"><span class="brand-icon"><svg class="icon"><use href="#icon-spark"/></svg></span><span>agent<span class="brand-accent">studio</span><small>by AI App Server</small></span></a><p>v2.1 · Integrated with AI App Server · 22 available tools · 7 examples · Original design</p><a href="/admin/studio">Open Studio <svg class="icon"><use href="#icon-arrow"/></svg></a></div></footer>
+</body></html>
